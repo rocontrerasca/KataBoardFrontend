@@ -73,7 +73,7 @@ export const TaskBoard = () => {
       <DragDropContext onDragEnd={handleDragEnd}>
         <div style={styles.board}>
           {(["TODO", "IN_PROGRESS", "DONE"] as const).map((status) => (
-            <Droppable droppableId={status} key={status}>
+            <Droppable droppableId={status} key={status} isDropDisabled={false} isCombineEnabled={true} ignoreContainerClipping={true}>
               {(provided) => (
                 <div
                   ref={provided.innerRef}
