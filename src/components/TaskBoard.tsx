@@ -26,6 +26,12 @@ export const TaskBoard = () => {
     }
   }, [id]);
 
+  const grouped = {
+    TODO: tasks.filter((t) => t.status === "TODO"),
+    IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS"),
+    DONE: tasks.filter((t) => t.status === "DONE"),
+  };
+
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
     if (!destination || destination.droppableId === source.droppableId) return;
@@ -44,14 +50,8 @@ export const TaskBoard = () => {
       .catch(() => toast.error("Error al actualizar tarea"));
   };
 
-  const grouped = {
-    TODO: tasks.filter((t) => t.status === "TODO"),
-    IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS"),
-    DONE: tasks.filter((t) => t.status === "DONE"),
-  };
-
   return (
-    <div>
+    <div >
       <div style={styles.header}>
         <h2>Tablero de Tareas</h2>
         <div>
@@ -73,7 +73,7 @@ export const TaskBoard = () => {
       <DragDropContext onDragEnd={handleDragEnd}>
         <div style={styles.board}>
           {(["TODO", "IN_PROGRESS", "DONE"] as const).map((status) => (
-            <Droppable droppableId={status} key={status} isDropDisabled={false} isCombineEnabled={true} ignoreContainerClipping={true}>
+            <Droppable droppableId={status.toString()} key={status.toString()}>
               {(provided) => (
                 <div
                   ref={provided.innerRef}
@@ -81,8 +81,8 @@ export const TaskBoard = () => {
                   style={styles.column}
                 >
                   <h3 style={styles.columnHeader}>{status.replace("_", " ")}</h3>
-                  <div style={styles.taskList}>
-                    {grouped[status].map((task, index) => (
+                  <div style={{ ...styles.taskList, minHeight: "100px" }}>
+                    {(grouped[status] || []).map((task, index) => (
                       <Draggable
                         draggableId={task.id.toString()}
                         index={index}
